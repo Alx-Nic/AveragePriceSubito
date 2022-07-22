@@ -13,6 +13,7 @@ using HtmlAgilityPack;
 using PrezziSubito.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 namespace PrezziSubito
 {
@@ -53,7 +54,9 @@ namespace PrezziSubito
 
             }
 
-            string responseMessage = ($"We have used {prices.Count} products to calculate an average price of {prices.Average():c} from a total of {totalAdds} ads.");
+            var average = prices.Average().ToString("C", CultureInfo.CreateSpecificCulture("de-DE"));
+
+            string responseMessage = ($"We have used {prices.Count} products to calculate an average price of {average} from a total of {totalAdds} ads.");
 
             Console.WriteLine(responseMessage);
 
