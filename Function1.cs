@@ -14,6 +14,7 @@ using PrezziSubito.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
+using System.Threading;
 
 namespace PrezziSubito
 {
@@ -24,6 +25,12 @@ namespace PrezziSubito
             [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req,
             ILogger log)
         {
+
+            //string culture = "de-DE";
+            //CultureInfo CI = new CultureInfo(culture);
+            //Thread.CurrentThread.CurrentUICulture = CI;
+
+
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -54,9 +61,9 @@ namespace PrezziSubito
 
             }
 
-            var average = prices.Average().ToString("C", CultureInfo.CreateSpecificCulture("de-DE"));
-
-            string responseMessage = ($"We have used {prices.Count} products to calculate an average price of {average} from a total of {totalAdds} ads.");
+            string responseMessage = ($"We have used {prices.Count} products to calculate an average price of {Math.Round(prices.Average(), 2)}," +
+                $" a min price of: {Math.Round(prices.Min(),2)} " +
+                $"and a max price of {Math.Round(prices.Max(),2)} from a total of {totalAdds} ads.");
 
             Console.WriteLine(responseMessage);
 

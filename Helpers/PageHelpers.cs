@@ -2,6 +2,7 @@
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,17 +30,19 @@ namespace PrezziSubito.Helpers
 
             foreach (var node in priceNodes)
             {
-                var positionForTrimming = 0;
-
                 var elementText = node.InnerText;
 
-                positionForTrimming = elementText.IndexOf("€");
+                if (string.IsNullOrWhiteSpace(elementText)) continue;
 
-                if (positionForTrimming == -1) continue;
+                string charsToTrim = ".€ ";
 
-                Decimal.TryParse(node.InnerText.Trim().Substring(0, positionForTrimming - 1), out Decimal price);
+                string parsedPrice = CleanString(charsToTrim, elementText).Trim();
 
-                prices.Add(price);
+                var numberFormatInfo = new NumberFormatInfo { NumberDecimalSeparator = ","};
+
+                var parseToDecimal = Decimal.Parse(parsedPrice, numberFormatInfo);
+
+                prices.Add(parseToDecimal);
 
             }
 
@@ -53,6 +56,18 @@ namespace PrezziSubito.Helpers
             var htmlDoc = web.Load(url);
 
             return htmlDoc;
+        }
+
+        public static string CleanString(string charsToClean, string stringToBeClened)
+        {
+            string result = stringToBeClened;
+
+            foreach (char c in charsToClean)
+            {
+                result = result.Replace(c.ToString(), string.Empty);
+            }
+
+            return result;
         }
     }
 }
